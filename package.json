@@ -1,0 +1,22 @@
+{
+  "name": "playwright-bdd-framework",
+  "version": "1.0.0",
+  "description": "Playwright with BDD Gherkin and POM",
+  "type": "commonjs",
+"scripts": {
+  "bdd": "cucumber-js tests/features --require tests/steps/**/*.ts --require tests/hooks/**/*.ts --require-module ts-node/register",
+  
+  "login": "cucumber-js tests/features --require tests/steps/**/*.ts --require tests/hooks/**/*.ts --require-module ts-node/register --tags"
+}
+,
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.6.0",
+    "@playwright/test": "^1.58.1",
+    "@types/node": "^25.1.0",
+    "allure-playwright": "^3.4.5",
+    "fs-extra": "^11.3.3",
+    "playwright-bdd": "^8.4.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
