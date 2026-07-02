@@ -1,22 +1,33 @@
 {
-  "name": "playwright-bdd-framework",
+  "name": "vapusdataqa",
   "version": "1.0.0",
   "description": "Playwright with BDD Gherkin and POM",
   "type": "commonjs",
-"scripts": {
-  "bdd": "cucumber-js tests/features --require tests/steps/**/*.ts --require tests/hooks/**/*.ts --require-module ts-node/register",
-  
-  "login": "cucumber-js tests/features --require tests/steps/**/*.ts --require tests/hooks/**/*.ts --require-module ts-node/register --tags"
-}
-,
+  "scripts": {
+    "test": "cross-env ENV=prod cucumber-js",
+    "posttest": "ts-node src/helper/report/report.ts",
+    "text:failed": "cross-env ENV=prod cucumber-js -p rerun @rerun.txt",
+    "test:dry": "cross-env ENV=prod cucumber-js --dry-run",
+    "report": "npx playwright show-report test-results/playwright-report",
+    "test:headed": "cross-env ENV=prod cucumber-js --world-parameters \"{\\\"headed\\\":true}\""
+  },
   "devDependencies": {
     "@cucumber/cucumber": "^12.6.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.58.2",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.1.0",
+    "allure-cucumberjs": "^3.4.5",
     "allure-playwright": "^3.4.5",
+    "cross-env": "^10.1.0",
+    "cucumber-html-reporter": "^7.2.0",
+    "dotenv": "^17.3.1",
     "fs-extra": "^11.3.3",
+    "multiple-cucumber-html-reporter": "^3.10.0",
     "playwright-bdd": "^8.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "winston": "^3.19.0"
   }
 }

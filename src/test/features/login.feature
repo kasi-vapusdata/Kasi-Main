@@ -1,8 +1,10 @@
 Feature: VapusData Login
 
   Scenario Outline: Login with different credential combinations
+   # Given user opens the VapusData application
+    #And user clicks login
     Given user opens the VapusData application
-    And user clicks login
+    #And user is logged into the application
     When user enters username "<username>"
     And user enters password "<password>"
     And user clicks login button
@@ -19,9 +21,9 @@ Scenario: Login using Continue with Google by valid email
   Given user opens the VapusData application
   And user clicks login
   When user clicks on Continue with Google button
-  When user enter email or phone "kasi@vapusdata.com"
+  When user enters username "kasi@vapusdata.com"
   When user clicks on next button
-  And user enter signin password "sarasWathi@123"
+  And user enter password "sarasWathi@123"
   When user clicks on next button
   Then "Finance Command Center" should be displayed
 
@@ -29,18 +31,17 @@ Scenario: Login using Continue with Google by invalid password
   Given user opens the VapusData application
   And user clicks login
   When user clicks on Continue with Google button
-  When user enter email or phone "kasi@vapusdata.com"
+  When user enters username "kasi@vapusdata.com"
   When user clicks on next button
-  And user enter signin password "12345654"
+  And user enter password "12345654"
   When user clicks on next button
-  Then "Wrong password" should be display
+  Then "Wrong password" should be displayed
 
 Scenario: Login using Continue with Google by empty field
   Given user opens the VapusData application
   And user clicks login
   When user clicks on Continue with Google button
-  When user enter email or phone ""
+  When user enters username ""
   When user clicks on next button
-  Then "Enter an email or phone number" should be display
-
+  Then "Enter an email or phone number" should be displayed
 
