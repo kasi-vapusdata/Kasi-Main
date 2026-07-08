@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+/*import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 
@@ -139,4 +139,124 @@ export class LoginPage extends BasePage {
       await expect(locator).toBeVisible({ timeout: 30000 });
     }
   }
+}*/
+
+
+
+
+
+
+import { Page } from '@playwright/test';
+import { BasePage } from './BasePage';
+
+export class LoginPage extends BasePage {
+  private googlePage: Page | null = null;
+
+  constructor(page: Page) {
+    super(page);
+  }
+
+  // Local Login Locators
+  private usernameInput = this.page.locator('#username');
+  private passwordInput = this.page.locator('#password');
+  private continueButton = this.page.locator('button[data-action-button-primary="true"]');
+  private loginError = this.page.getByText('Wrong email or password');
+  private usernameValidation = this.page.getByText('Please enter an email address');
+
+  // Google Login Locators
+  private continueWithGoogleButton = this.page.locator('button[data-provider="google"]');
+
+  // Google Auth Page Locators (will be used with googlePage)
+  private get googleEmailInput() {
+    return this.googlePage?.locator('#identifierId');
+  }
+
+  private get googleNextButton() {
+    return this.googlePage?.getByRole('button', { name: 'Next' });
+  }
+
+  private get googlePasswordInput() {
+    return this.googlePage?.locator('input[name="Passwd"]');
+  }
+
+  private get googleErrorMessage() {
+    return this.googlePage?.locator('[role="alert"]');
+  }
+
+  // Local Login Methods
+  async fillUsername(username: string) {
+    await this.usernameInput.fill(username);
+  }
+
+  async fillPassword(password: string) {
+    await this.passwordInput.fill(password);
+  }
+
+  async clickLoginButton() {
+    await this.continueButton.click();
+    
+  }
+
+  async clickContinueWithGoogle() {
+    await this.continueWithGoogleButton.click();
+  }
+
+  setGooglePage(page: Page) {
+    this.googlePage = page;
+  }
+
+  // Google Auth Methods
+  async fillGoogleEmail(email: string) {
+    await this.googleEmailInput?.fill(email);
+  }
+
+  async clickGoogleNext() {
+    await this.googleNextButton?.click();
+  }
+
+  async fillGooglePassword(password: string) {
+    await this.googlePasswordInput?.fill(password);
+  }
+
+  // State/Validation methods (for use in test assertions)
+  getLoginErrorLocator() {
+    return this.loginError;
+  }
+
+  getUsernameValidationLocator() {
+    return this.usernameValidation;
+  }
+
+  getGoogleErrorMessageLocator() {
+    return this.googleErrorMessage;
+  }
+  async loginWithEnvCredentials() {
+  const username = process.env.USERNAME;
+  const password = process.env.PASSWORD;
+
+  if (!username || !password) {
+    throw new Error("USERNAME or PASSWORD not defined in .env file");
+  }
+
+  await this.fillUsername(username);
+  await this.fillPassword(password);
+  await this.clickLoginButton();
 }
+
+async googleLoginWithEnvCredentials() {
+  const email = process.env.GOOGLE_USERNAME;
+  const password = process.env.GOOGLE_PASSWORD;
+
+  if (!email || !password) {
+    throw new Error("GOOGLE_USERNAME or GOOGLE_PASSWORD not defined in .env");
+  }
+
+  await this.fillGoogleEmail(email);
+  await this.clickGoogleNext();
+  await this.fillGooglePassword(password);
+  await this.clickGoogleNext();
+}
+}
+
+
+

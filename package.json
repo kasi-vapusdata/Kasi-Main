@@ -4,8 +4,7 @@
   "description": "Playwright with BDD Gherkin and POM",
   "type": "commonjs",
   "scripts": {
-    "test": "cross-env ENV=prod cucumber-js",
-    "posttest": "ts-node src/helper/report/report.ts",
+    "test": "node src/helper/util/runCucumber.js",
     "text:failed": "cross-env ENV=prod cucumber-js -p rerun @rerun.txt",
     "test:dry": "cross-env ENV=prod cucumber-js --dry-run",
     "report": "npx playwright show-report test-results/playwright-report",
