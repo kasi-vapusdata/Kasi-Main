@@ -12,6 +12,7 @@ Background: Verify user can access Financial Command Center
     Then Enter the domain name in the search box "dmn-79b6b323-1cb1-4272-9818-18b6b4615801"
     When user clicks on "Finance Menu" 
     When user clicks on "Claims and Offers"
+    
 @claim
 Scenario: Verify user can navigate to Claims page
     Given user clicks on "Claims"
