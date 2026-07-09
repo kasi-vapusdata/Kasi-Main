@@ -7,6 +7,7 @@ import { createLogger } from "winston";
 import { options } from "../helper/util/logger";
 import fs from "fs-extra";
 import { APBillsPage } from "../test/pages/ApBilsPage";
+import { ClaimsPage } from "../test/pages/ClaimsPage.spec";
 
 setDefaultTimeout(60 * 1000);
 let browser: Browser;
@@ -52,6 +53,7 @@ Before({ tags: "not @auth" }, async function ({ pickle }) {
   fixture.page = page;
   fixture.logger = createLogger(options(scenarioName));
   fixture.APBillsPage = new APBillsPage(page);
+  fixture.claimsPage = new ClaimsPage(page);
 });
 
 // 🔹 Auth scenarios
@@ -81,6 +83,7 @@ Before({ tags: "@auth" }, async function ({ pickle }) {
   fixture.page = page;
   fixture.logger = createLogger(options(scenarioName));
   fixture.APBillsPage = new APBillsPage(page);
+  fixture.claimsPage = new ClaimsPage(page);
 });
 
 // 🔹 After Hook
