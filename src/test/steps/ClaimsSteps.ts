@@ -63,8 +63,33 @@ Then('click on the first claim {string} in the list', async function (string) {
             }
         }
 
-        const comparisonResult = compareExcelFiles(resolvedExpectedPath, downloadedFilePath, "RH_Data");
+        const captureComparisonEvidence = async (type: "failure" | "error", reason: string) => {
+            const evidenceName = `comparison-${type}-${Date.now()}`;
+            const evidencePath = `test-results/screenshots/${evidenceName}.png`;
+            const evidenceScreenshot = await fixture.page.screenshot({
+                path: evidencePath,
+                type: "png",
+                fullPage: true,
+            });
+
+            await this.attach(evidenceScreenshot, "image/png");
+            await this.attach(
+                `Comparison ${type} for sheet RH_Data. Expected: ${resolvedExpectedPath} | Downloaded: ${downloadedFilePath} | Screenshot: ${evidencePath} | Reason: ${reason}`,
+                "text/plain"
+            );
+        };
+
+        let comparisonResult;
+        try {
+            comparisonResult = compareExcelFiles(resolvedExpectedPath, downloadedFilePath, "RH_Data");
+        } catch (error) {
+            const compareErrorMessage = (error as Error).message;
+            await captureComparisonEvidence("error", compareErrorMessage);
+            throw error;
+        }
+
         if (!comparisonResult.isEqual) {
+            await captureComparisonEvidence("failure", comparisonResult.reason || "Unknown mismatch");
             throw new Error(
                 `Downloaded sheet does not match expected sheet. ${comparisonResult.reason}`
             );
