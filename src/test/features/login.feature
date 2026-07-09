@@ -13,7 +13,6 @@ Feature: VapusData Login
       | kasi@vapusdata.com | sarasWathi@123  | VapusFin               |
       | kasi@vapusdata.com | Wrong@123       | login error message    |
       |                    |                 | validation messages    |
-
 @google
 Scenario: Login using Continue with Google by valid email
   Given user opens the VapusData application
