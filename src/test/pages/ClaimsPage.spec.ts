@@ -1,4 +1,7 @@
 import { BasePage } from "./BasePage";
+import { Page } from "@playwright/test";
+import fs from "fs-extra";
+import path from "path";
 export class ClaimsPage extends BasePage {
 
 
@@ -60,11 +63,51 @@ export class ClaimsPage extends BasePage {
     await claimAction.click();
   }
 
+  async clickOnClaimActionAndSwitchToNewPage(actionName: string, index: number): Promise<Page> {
+    const normalizedActionName = actionName.toLowerCase();
+    const claimAction = this.page.locator(
+      `(//*[@data-title and translate(normalize-space(@data-title), "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="${normalizedActionName}"])[${index}]`
+    );
+
+    const popupPromise = this.page.waitForEvent("popup", { timeout: 15000 }).catch(() => null);
+    const contextPagePromise = this.page.context().waitForEvent("page", { timeout: 15000 }).catch(() => null);
+
+    await claimAction.click();
+
+    const newPage = (await popupPromise) ?? (await contextPagePromise);
+    if (!newPage) {
+      throw new Error("Claim details page did not open in a new tab/window.");
+    }
+
+    await newPage.waitForLoadState("domcontentloaded");
+    await newPage.bringToFront();
+    return newPage;
+  }
+
   async clickOnClaimViewDetails(index: number) {
     await this.clickOnClaimAction("View Details", index);
   }
 
   async clickOnFirstClaimViewDetails() {
     await this.clickOnClaimViewDetails(1);
+  }
+
+  async clickOnDownloadRHFile(): Promise<string> {
+    const downloadButton = this.page.locator('(//button)[11]');
+    const [download] = await Promise.all([
+      this.page.waitForEvent("download"),
+      downloadButton.click(),
+    ]);
+
+    const downloadsDir = path.resolve("test-results/downloads");
+    await fs.ensureDir(downloadsDir);
+
+    const downloadedFilePath = path.join(
+      downloadsDir,
+      `${Date.now()}-${download.suggestedFilename()}`
+    );
+
+    await download.saveAs(downloadedFilePath);
+    return downloadedFilePath;
   }
 }

@@ -15,7 +15,7 @@ Background: Verify user can access Financial Command Center
     And user navigates to Claims page from Finance menu
     
 @claim
-Scenario: Verify user can navigate to Claims page
+Scenario: Download the Electronics PUC_FDC RH file and verify data
     Given user clicks on "Claims"
     And  user clicks on "Filters"
     And Select filter "B U" as "ELECTRONICS"
@@ -25,8 +25,20 @@ Scenario: Verify user can navigate to Claims page
     And Select filter "Status" as "PENDING KAM APPROVAL"
     Then user clicks on "Apply Filters"
     And click on the first claim "view Details" in the list
-    Then Verify the valid from and valid to dates 
+    And click on download "RH file" and verify data
 
+Scenario: Download the Electronics PREXO RH file and verify data
+    Given user clicks on "Claims"
+    And  user clicks on "Filters"
+    And Select filter "B U" as "ELECTRONICS"
+    And Select filter "Category" as "ELECTRONICS"
+    And Select filter "Scheme Type" as "SELL SIDE"
+    And Select filter "Sub Scheme Type" as "PREXO"
+    And Select filter "Status" as "PENDING KAM APPROVAL"
+    Then user clicks on "Apply Filters"
+    And click on the first claim "view Details" in the list
+    And click on download "RH file" and verify data
+    
 
 
     

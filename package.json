@@ -15,6 +15,7 @@
     "@playwright/test": "^1.58.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^25.1.0",
+    "@types/xlsx": "^0.0.35",
     "allure-cucumberjs": "^3.4.5",
     "allure-playwright": "^3.4.5",
     "cross-env": "^10.1.0",
@@ -27,6 +28,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5"
   }
 }
