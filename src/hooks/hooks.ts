@@ -8,6 +8,13 @@ import { options } from "../helper/util/logger";
 import fs from "fs-extra";
 import { APBillsPage } from "../test/pages/ApBilsPage";
 import { ClaimsPage } from "../test/pages/ClaimsPage.spec";
+import {
+  ClaimsFilterContext,
+  ClaimsFileValidationOrchestrator,
+  ComparatorFactory,
+  DynamicTestDataFolderResolver,
+  ExpectedFileDiscoveryService,
+} from "../helper/claims-validation";
 
 setDefaultTimeout(60 * 1000);
 let browser: Browser;
@@ -48,12 +55,21 @@ Before({ tags: "not @auth" }, async function ({ pickle }) {
     snapshots: true,
     sources: true,
   });
-
+ 
   const page = await context.newPage();
   fixture.page = page;
   fixture.logger = createLogger(options(scenarioName));
   fixture.APBillsPage = new APBillsPage(page);
   fixture.claimsPage = new ClaimsPage(page);
+  fixture.claimsFilterContext = new ClaimsFilterContext();
+  fixture.claimsValidationOrchestrator = new ClaimsFileValidationOrchestrator(
+    fixture.logger,
+    fixture.claimsPage,
+    new DynamicTestDataFolderResolver(process.env.TEST_DATA_ROOT_PATH || "src/test/TestData"),
+    new ExpectedFileDiscoveryService(),
+    new ComparatorFactory(),
+    process.env.CLAIMS_FOLDER_DIMENSIONS
+  );
 });
 
 // 🔹 Auth scenarios
@@ -84,6 +100,15 @@ Before({ tags: "@auth" }, async function ({ pickle }) {
   fixture.logger = createLogger(options(scenarioName));
   fixture.APBillsPage = new APBillsPage(page);
   fixture.claimsPage = new ClaimsPage(page);
+  fixture.claimsFilterContext = new ClaimsFilterContext();
+  fixture.claimsValidationOrchestrator = new ClaimsFileValidationOrchestrator(
+    fixture.logger,
+    fixture.claimsPage,
+    new DynamicTestDataFolderResolver(process.env.TEST_DATA_ROOT_PATH || "src/test/TestData"),
+    new ExpectedFileDiscoveryService(),
+    new ComparatorFactory(),
+    process.env.CLAIMS_FOLDER_DIMENSIONS
+  );
 });
 
 // 🔹 After Hook
@@ -139,6 +164,8 @@ After(async function ({ pickle, result }) {
     const logContent = fs.readFileSync(logPath, "utf-8");
     await this.attach(logContent, "text/plain");
   }
+
+  fixture.claimsFilterContext.clear();
 });
 
 AfterAll(async function () {
